@@ -4,7 +4,7 @@
 \usepackage[english,russian]{babel}
 \usepackage{indentfirst}
 
-\textwidth=17cm
+\textwidth=16cm
 \oddsidemargin=0pt
 \topmargin=0pt
 \headheight=0pt
@@ -24,10 +24,12 @@
   \maketitle
 
     \paragraph{Lars Ole Andersen.}
-      {\it Program Analysis and Specialization for
-        the C Programming Language.}
-      PhD thesis, Department of Computer Science, University of Copenhagen,
-      May 1994.
+      {\English
+        {\it Program Analysis and Specialization for
+          the C Programming Language.}
+        PhD thesis, Department of Computer Science, University of Copenhagen,
+        May 1994.
+      }
 
       Довольно большая работа, из которой я изучил Главу 4 «Pointer Analysis»
       (с.~111--152). В ней описываются основные характеристики, которыми
@@ -54,9 +56,11 @@
 
 
     \paragraph{Bjarne Steensgaard.}
-      {\it Points-to analysis in almost linear time.}
-      Microsoft Research,
-      March 1995.
+      {\English
+        {\it Points-to analysis in almost linear time.}
+        Microsoft Research,
+        March 1995.
+      }
 
       Автор описывает другой алгоритм, характерной чертой которого является
       практически линейное время работы. Также формулируется система типов
@@ -70,6 +74,19 @@
       $\tau_x \supset \tau_y$ ({\English subset-based}).
       За счет такого ограничения алгоритм становится менее точным, но более
       быстрым с точки зрения производительности.
+
+    \paragraph{Derek Rayside.}
+      {\English
+        {\it Points-To Analysis.}
+        MIT CSAIL 6.883, Prof Ernst,
+        November 14, 2005.
+      }
+
+      Очень небольшая статья, в которой автор разделяет разные алгоритмы
+      анализа на группы, и на примерах показывает сильные и слабые стороны
+      {\English equality-based} и {\English subset-based} алгоритмов.
+      {\it Довольно проблематично привести эти примеры из-за
+      их большого размера.}
 
 
 \end{document}
