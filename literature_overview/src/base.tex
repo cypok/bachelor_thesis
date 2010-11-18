@@ -3,14 +3,19 @@
 \usepackage[utf8x]{inputenc}
 \usepackage[english,russian]{babel}
 \usepackage{indentfirst}
+\usepackage{color}
 
 \textwidth=16cm
 \oddsidemargin=0pt
 \topmargin=0pt
 \headheight=0pt
 \headsep=0pt
-\textheight=24cm
+\textheight=22cm
 \linespread{1.3}
+
+\newcommand{\remark}[1]{\textcolor{blue}{#1}}
+\newcommand{\eng}[1]{{\English#1}}
+\newcommand{\todo}[1]{\textcolor{red}{TODO: #1}}
 
 \title{
   Обзор литературы на тему \\
@@ -24,8 +29,8 @@
   \maketitle
 
     \paragraph{Lars Ole Andersen.}
-      {\English
-        {\it Program Analysis and Specialization for
+      \eng{
+        \textit{Program Analysis and Specialization for
           the C Programming Language.}
         PhD thesis, Department of Computer Science, University of Copenhagen,
         May 1994.
@@ -35,9 +40,9 @@
       (с.~111--152). В ней описываются основные характеристики, которыми
       может обладать алгоритм анализа, влияющие на его скорость и точность.
 
-      Суммарный ({\English summary, flow-insensitive}) анализ предоставляет
+      Суммарный (\eng{summary, flow-insensitive}) анализ предоставляет
       результат верный для любой точки программы, в то время как точечный
-      ({\English program-point specific, flow-sensitive}) вычисляет результат
+      (\eng{program-point specific, flow-sensitive}) вычисляет результат
       для каждой отдельной точки программы, что значительно повышает точность
       анализа, но понижает производительность.
 
@@ -51,13 +56,13 @@
       абстракных мест. В этих терминах он формулирует алгоритм анализа, который
       состоит в построении системы ограничений и дальнейшем ее решении.
 
-      {\it Вот как именно строится эта система, и как она решается я
+      \remark{Вот как именно строится эта система, и как она решается я
       не понял :(}
 
 
     \paragraph{Bjarne Steensgaard.}
-      {\English
-        {\it Points-to analysis in almost linear time.}
+      \eng{
+        \textit{Points-to analysis in almost linear time.}
         Microsoft Research,
         March 1995.
       }
@@ -68,25 +73,65 @@
 
       Особенность алгоритма заключается в том, что присваивание $x = y$
       накладывает ограничение на полное равенство типов,
-      $\tau_x = \tau_y$ ({\English equality-based}),
+      $\tau_x = \tau_y$ (\eng{equality-based}),
       в то время как алгоритм представленный в работе [Andersen] требует лишь,
       чтобы один из типов был подмножеством другого,
-      $\tau_x \supset \tau_y$ ({\English subset-based}).
+      $\tau_x \supset \tau_y$ (\eng{subset-based}).
       За счет такого ограничения алгоритм становится менее точным, но более
       быстрым с точки зрения производительности.
 
     \paragraph{Derek Rayside.}
-      {\English
-        {\it Points-To Analysis.}
+      \eng{
+        \textit{Points-To Analysis.}
         MIT CSAIL 6.883, Prof Ernst,
         November 14, 2005.
       }
 
       Очень небольшая статья, в которой автор разделяет разные алгоритмы
       анализа на группы, и на примерах показывает сильные и слабые стороны
-      {\English equality-based} и {\English subset-based} алгоритмов.
-      {\it Довольно проблематично привести эти примеры из-за
+      \eng{equality-based} и \eng{subset-based} алгоритмов.
+      \remark{Довольно проблематично привести эти примеры из-за
       их большого размера.}
+
+    \paragraph{Marc Shapiro, Susan Horwitz.}
+      \eng{
+        \textit{Fast and Accurate Flow-Insensitive Points-To Analysis.}
+        Computer Sciences Department, University of Wisconsin-Madison,
+        1997.
+      }
+
+      В этой работе сначала приводятся экспериментальные данные о
+      производительности и точности алгоритмов Стинсгарда и Андерсена.
+      Показывается что на небольших программах (менее 3000 строк) время работы
+      примерно одинаково, но точность у алгоритма Андерсена значительно выше,
+      на больших программах же время работы алгоритма Андерсена растет гораздо
+      быстрее.
+
+      Так же в работе представлены два новых алгоритма.  Первый является
+      расширением алгоритма Стинсгарда, в котором вводятся категории
+      переменных, фактически, это компромисс между
+      точностью алгоритма Андерсена и скоростью алгоритма Стинсгарда.
+      \remark{Чтобы здесь нормально объяснить суть, нужно страницу исписать,
+      стоит ли?}
+      За счет изменения количества этих категорий и разбиения переменных
+      на них алгоритм может либо давать более точные результаты, либо быстрее
+      работать.
+
+      Второй алгоритм использует первый. Суть алгоритма заключается в
+      фиксировании количества категорий и использованию первого алгоритма
+      несколько раз с разным разбиением объектов на категории. За счет этого
+      можно значительно повысить точность и не так сильно понизить
+      производительность.
+
+    \paragraph{John Whaley, Martin Rinard.}
+      \eng{
+        \textit{Compositional Pointer and Escape Analysis for Java Programs.}
+        Laboratory for Computer Science, MIT,
+        1999.
+      }
+
+      \todo{прочитать и написать}
+
 
 
 \end{document}
