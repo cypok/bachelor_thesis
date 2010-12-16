@@ -22,6 +22,8 @@
 \textheight=23cm
 \linespread{1.3}
 
+\bibliographystyle{gost780u}
+
 %\newcommand{\remark}[1]{}
 \newcommand{\remark}[1]{\textcolor{blue}{#1}}
 \newcommand{\todo}[1]{\textcolor{red}{TODO: #1}}
@@ -99,7 +101,7 @@
     В общем случае задача проверки эквивалентности двух программ неразрешима,
     и не существует алгоритма, который по данной программе находил бы
     эквивалентную ей и оптимальную относительно заданного критерия
-    \cite{translators}.
+    \cite{kasjanov_translators}.
 
     Тем не менее существует набор известных оптимизирующих преобразований,
     таких, что корректность каждого из них гарантирует корректность их
@@ -134,7 +136,7 @@
 
     Существует множество алгоритмов анализа указателей и синонимов,
     одним из них является алгоритм анализа, основанный на типах
-    (\eng{Type-Based Alias Analysis}),
+    (\eng{Type-Based Alias Analysis}) \cite{diwan_tbaa},
     применимый для языков со строгой типизацией.
     Наличие строгой типизации гарантирует, что ссылочная переменная формального
     типа $T$ может ссылаться либо на объект типа $T$, либо на объект типа $S$,
@@ -142,7 +144,7 @@
     Простейшая реализация алгоритма основанного на типах считает, что
     любая ссылочная переменная формального типа $T$ может указывать на любые
     объекты типа $T$ или его наследников. Такой алгоритм работает очень быстро,
-    но обладает сравнительно низкой точностью \cite{tbaa}.
+    но обладает сравнительно низкой точностью.
 
     Более точные алгоритмы анализа обращают внимание не только на типы
     переменных, но и на потоки данных в программе. Например, если мы в
@@ -246,32 +248,8 @@
   %             Список литературы
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   \newpage
-  \todo{use bibtex}
-  \begin{thebibliography}{99}
-
-    \bibitem{translators}
-      Касьянов В.\,Н., Поттосин И.\,В.
-      \textit{Методы построения трансляторов.}
-      Новосибирск: Наука,
-      1986.
-
-    \bibitem{steensgaard}
-      \eng{
-        Bjarne Steensgaard.
-        \textit{Points-to analysis in almost linear time.}
-        Microsoft Research,
-        March 1995.
-      }
-
-    \bibitem{tbaa}
-      \eng{
-        Amer Diwan, Kathryn S.~McKinley, J.~Eliot B.~Moss.
-        \textit{Type-Based Alias Analysis.}
-        In the 1998 Proc. ACM SIGPLAN Conference on Programming Language
-        Design and Implementation (PLDI’98).
-      }
-
-  \end{thebibliography}
+  \addcontentsline{toc}{section}{Список литературы}
+  \bibliography{../../biblio}
 
 \end{document}
 
