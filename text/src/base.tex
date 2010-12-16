@@ -30,6 +30,8 @@
 
 \newcommand{\eng}[1]{{\English#1}}
 
+\newcommand{\underscore}[1]{\hbox to#1{\hrulefill}}
+
 \begin{document}
 
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -280,5 +282,37 @@
   \addcontentsline{toc}{section}{Список литературы}
   \bibliography{../../biblio}
 
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %               План график
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \newpage
+  \thispagestyle{empty}
+  \pagestyle{empty}
+  \section*{План-график}
+
+    \begin{center}
+      \begin{tabular}{|p{10.5cm}|c|c|}\hline
+        \textbf{Задача}                       &\textbf{Время} & \textbf{Срок}\\
+        \hline
+        Прочитать кучу статей                 & (выполнено)   & 31.11 \\
+        \hline
+      \end{tabular}
+    \end{center}
+
+
+
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %                  Оценки
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \newpage
+  \thispagestyle{empty}
+  \pagestyle{empty}
+  \section*{Оценка за октябрьский отчёт}
+
+    Руководитель: \underscore{1cm} (из 10 баллов).
+    Подпись: \underscore{3cm} (Павлов\,П.\,Е.)
+
+    \vspace{0.5cm}
+    Преподаватель: \underscore{2cm}
 \end{document}
 
