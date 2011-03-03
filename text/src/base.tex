@@ -31,6 +31,8 @@
 
 \floatname{algorithm}{Пример}
 \renewcommand{\algorithmicrequire}{\textbf{Дано:}}
+\newcommand{\NEW}{\textbf{new }}
+\newcommand{\FUNCTION}{\textbf{function }}
 
 %\newcommand{\remark}[1]{}
 \newcommand{\remark}[1]{\textcolor{green}{#1}}
@@ -184,8 +186,8 @@
       \caption{Сравнение \eng{subset-based} и \eng{equality-based} алгоритмов}
       \label{code:data_flow}
       \begin{algorithmic}[1]
-        \STATE $b$ = new T()
-        \STATE $c$ = new T()
+        \STATE $b$ = \NEW T()
+        \STATE $c$ = \NEW T()
         \STATE $a$ = $b$
         \STATE $a$ = $c$
       \end{algorithmic}
@@ -224,9 +226,9 @@
                управления алгоритма}
       \label{code:control_flow}
       \begin{algorithmic}[1]
-        \STATE $a$ = new T()
-        \STATE $b$ = new T()
-        \STATE $c$ = new T()
+        \STATE $a$ = \NEW T()
+        \STATE $b$ = \NEW T()
+        \STATE $c$ = \NEW T()
         \STATE $a$ = $b$
         \STATE $b$ = $c$
         \STATE $c$ = $a$
@@ -262,9 +264,12 @@
       \caption{Демонстрация работы межпроцедурного алгоритма}
       \label{code:interprocedural}
       \begin{algorithmic}[1]
-        \STATE function foo($x$, $y$) \{ return $x$ \}
-        \STATE $b$ = new T()
-        \STATE $c$ = new T()
+        \STATE \FUNCTION foo($x$, $y$) \{
+        \RETURN $x$
+        \STATE \}
+        \STATE
+        \STATE $b$ = \NEW T()
+        \STATE $c$ = \NEW T()
         \STATE $a$ = foo($b$, $c$)
       \end{algorithmic}
     \end{algorithm}
@@ -512,9 +517,9 @@
         \label{code:ssa_precision}
         \begin{algorithmic}[1]
           \REQUIRE $x_0$, $x_1$, ..., $x_i$~--- версии одной переменной $x$
-          \STATE $a_0$ = new T()
-          \STATE $b_0$ = new T()
-          \STATE $c_0$ = new T()
+          \STATE $a_0$ = \NEW T()
+          \STATE $b_0$ = \NEW T()
+          \STATE $c_0$ = \NEW T()
           \STATE $a_1$ = $b_0$
           \STATE $b_1$ = $c_0$
           \STATE $c_1$ = $a_1$
