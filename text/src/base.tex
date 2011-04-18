@@ -7,6 +7,7 @@
 \usepackage{algorithm}
 \usepackage{algorithmic}
 \usepackage[pdftex]{graphicx}
+\usepackage{multicol}
 
 
 \title{
@@ -30,7 +31,9 @@
 \graphicspath{{../images/}}
 
 \floatname{algorithm}{Пример}
+\newcommand{\algorithmictitle}[1]{\hspace{8mm}\textbf{#1}}
 \renewcommand{\algorithmicrequire}{\textbf{Дано:}}
+\renewcommand{\algorithmiccomment}[1]{// #1}
 \newcommand{\NEW}{\textbf{new }}
 \newcommand{\NEWi}[1]{\textbf{new}_{#1}\textbf{ }}
 \newcommand{\NULL}{\textbf{null }}
@@ -363,25 +366,26 @@
       проведение оптимизации корректно.
 
       \begin{algorithm}
-        \caption{Вынос инвариантов цикла}
+        \caption{Вынесение инвариантов цикла}
         \label{code:licm}
-        \todo{использовать что-нибудь нормальное для вывода таких вот
-              листингов}
-        \begin{algorithmic}[1]
-          \REQUIRE До выноса инварианта цикла
-          \FOR{$i = 1$ to \textbf{length}($a$)}
-          \STATE $y.field \gets func(i)$
-          \STATE $a[i] \gets x.field$
-          \ENDFOR
-        \end{algorithmic}
-        \begin{algorithmic}[1]
-          \REQUIRE После выноса инваринта цикла
-          \STATE $temp \gets x.field$
-          \FOR{$i = 1$ to \textbf{length}($a$)}
-          \STATE $y.field \gets func(i)$
-          \STATE $a[i] \gets temp$
-          \ENDFOR
-        \end{algorithmic}
+        \begin{multicols*}{2}
+          \algorithmictitle{Исходный код}
+          \begin{algorithmic}[1]
+            \FOR{$i = 1$ to \textbf{length}($a$)}
+            \STATE $y.field = func(i)$
+            \STATE $a[i] = x.field$
+            \ENDFOR
+          \end{algorithmic}
+          \columnbreak
+          \algorithmictitle{Преобразованный код}
+          \begin{algorithmic}[1]
+            \STATE $temp = x.field$
+            \FOR{$i = 1$ to \textbf{length}($a$)}
+            \STATE $y.field = func(i)$
+            \STATE $a[i] = temp$
+            \ENDFOR
+          \end{algorithmic}
+        \end{multicols*}
       \end{algorithm}
 
       Анализ синонимов описанный в работе позволяет отвечать на
@@ -873,20 +877,21 @@
         \caption{Синхронизация через \eng{volatile} переменную
           ($data$~--- обычное поле, $ready$~--- \eng{volatile} поле)}
         \label{code:volatile_synch}
-        \todo{использовать что-нибудь нормальное для вывода таких вот
-              листингов}
-        \begin{algorithmic}[1]
-          \REQUIRE Поток 1
-          \STATE $data$ = get\_data()
-          \STATE $ready$ = \BOOLTRUE
-        \end{algorithmic}
-        \begin{algorithmic}[1]
-          \REQUIRE Поток 2
-          \WHILE{ \textbf{not } $ready$ }
-          \STATE \COMMENT{waiting}
-          \ENDWHILE
-          \STATE use\_data($data$)
-        \end{algorithmic}
+        \begin{multicols*}{2}
+          \algorithmictitle{Поток 1}
+          \begin{algorithmic}[1]
+            \STATE $data$ = get\_data()
+            \STATE $ready$ = \BOOLTRUE
+          \end{algorithmic}
+          \columnbreak
+          \algorithmictitle{Поток 2}
+          \begin{algorithmic}[1]
+            \WHILE{ \textbf{not } $ready$ }
+            \STATE \COMMENT{waiting}
+            \ENDWHILE
+            \STATE use\_data($data$)
+          \end{algorithmic}
+        \end{multicols*}
       \end{algorithm}
 
       Отдельно стоит сказать про \eng{final} поля классов и объектов.
