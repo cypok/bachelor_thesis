@@ -1,20 +1,23 @@
-\documentclass[usenames,dvipsnames,pdftex]{beamer}
+\documentclass[usenames,dvipsnames,pdftex,unicode]{beamer}
 \usepackage{ucs}
 \usepackage[utf8x]{inputenc}
 \usepackage[english,russian]{babel}
-\usepackage{indentfirst}
-\usepackage{algorithm}
 \usepackage{algorithmic}
-\usepackage{multicol}
+
+\usepackage{tikz}
+\usetikzlibrary{arrows,shapes}
 
 \usetheme{Warsaw}
 \usecolortheme{seagull}
 
-\title[Анализ указателей для многопоточных программ]{
+\setbeamercovered{transparent}
+
+\title[Анализ указателей и синонимов]{
   Анализ указателей и синонимов для многопоточных программ
 }
-\author{
-  Владимир Парфиненко
+\author[Владимир Парфиненко]{
+  Владимир Парфиненко\\
+  {\small Научный руководитель: м.\,н.\,с.~ИСИ~СО~РАН, Павлов\,П.\,Е.}
 }
 \institute{
   Новосибирский Государственный Университет
@@ -23,6 +26,16 @@
   Новосибирск, 2011
 }
 
+
+% добавить номер фрейма в footline
+\newcommand*\oldmacro{}
+\let\oldmacro\insertshorttitle
+\renewcommand*\insertshorttitle{
+  \oldmacro\hfill
+  \insertframenumber\,/\,\inserttotalframenumber
+}
+
+\newcommand{\algorithmictitle}[1]{\hspace{8mm}\textbf{#1}}
 
 \newcommand{\remark}[1]{\textcolor{Green}{#1}}
 \newcommand{\todo}[1]{\textcolor{red}{TODO: #1}}
@@ -36,9 +49,206 @@
   \titlepage
 \end{frame}
 
-\begin{frame}{Заголовок}
+\begin{frame}{Статический анализ}
 
-  Транспаранты будут здесь!
+  \begin{itemize}
+    \item Оптимизирующие компиляторы\newline
+        GCC, MSVC, ICC, Borland C++, MinGW, \ldots
+    \item Инструменты статического анализа\newline
+        SourceAnalyzer, ReSharper, Static Security Analyzer, \ldots
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}{Вынесение инварианта из цикла}
+
+  \begin{visibleenv}<2>
+    \begin{center}
+      \large А что если $x$ и $y$ указывают на один объект?
+    \end{center}
+  \end{visibleenv}
+
+  \begin{columns}[t]
+    \begin{column}{5cm}
+      \begin{block}{Исходный код}
+        \begin{algorithmic}
+          \STATE
+          \FOR{$i = 0 \textbf{ to } n$}
+          \STATE $x.f = i$
+          \STATE $a[i] = y.\only<1>{g}\only<2>{f}$
+          \ENDFOR
+        \end{algorithmic}
+      \end{block}
+    \end{column}
+    \begin{column}{5cm}
+      \begin{block}{Преобразованный код}
+        \begin{algorithmic}
+          \STATE $temp = y.\only<1>{g}\only<2>{f}$
+          \FOR{$i = 0 \textbf{ to } n$}
+          \STATE $x.f = i$
+          \STATE $a[i] = temp$
+          \ENDFOR
+        \end{algorithmic}
+      \end{block}
+    \end{column}
+  \end{columns}
+
+\end{frame}
+
+\begin{frame}{Оптимизаторы и анализаторы}
+
+  \begin{center}
+    \todo{картинка}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}{Анализ синонимов и указателей}
+
+  \begin{block}{Анализ синонимов (англ. \eng{Alias Analysis})}
+    Могут ли два разных выражения ссылочного типа указывать на одно и то же
+    место в памяти?
+  \end{block}
+
+  \begin{block}{Анализ указателей (англ. \eng{Points-To Analysis})}
+    На какие объекты в памяти могут указывать выражения ссылочного типа?
+  \end{block}
+
+\end{frame}
+
+\begin{frame}{Многопоточность}
+
+  \begin{itemize}
+    \item<1-> Алгоритму анализа указателей необходимо знать, какие значения
+          могут быть прочитаны из полей объектов
+    \item<1-> Проблемы с получением значений поля в многопоточных программах:
+          \begin{itemize}
+            \item<2-> поле может изменяться другими потоками
+            \item<3-> изменение поля может быть не видно другим потокам
+          \end{itemize}
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}{Цель и задачи}
+
+  \begin{itemize}
+    \item Цель: разработка внутрипроцедурного алгоритма анализа указателей и
+          внутреннего представления для использования в статическом
+          оптимизирующем Java компиляторе Excelsior RVM
+    \item Основные задачи:
+      \begin{itemize}
+        \item изучить существующие алгоритмы и выбрать подходящий
+        \item адаптировать для анализа Java программ
+        \item адаптировать для анализа многопоточных программ
+        \item реализовать алгоритм в компиляторе Excelsior RVM
+      \end{itemize}
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}{Существующие алгоритмы}
+
+  \begin{itemize}
+    \item Алгоритм Андерсена\\сложность $O(N^3)$, более точный
+    \item Алгоритм Стинсгарда\\сложность $O(N \alpha(N,N))$, менее точный\\
+          {\small($\alpha(N,N)$~--- обратная функция Аккермана)}
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}{C $\neq$ Java}
+
+  \begin{columns}[t]
+    \begin{column}{5cm}
+      {\Large Язык C}
+
+      $\textbf{int } *x = (\textbf{int } *)37 + 5;$
+
+      \begin{itemize}
+        \item есть адресная арифметика
+        \item указатели на примитивы, объекты, \ldots
+        \item объекты на стеке, в куче
+        \item нестрогая типизация
+      \end{itemize}
+    \end{column}
+    \begin{column}{5cm}
+      {\Large Язык Java}
+
+      $\textbf{Object } x = \textbf{new Object}();$
+
+      \begin{itemize}
+        \item нет адресной арифметики
+        \item указатели только на объекты
+        \item объекты только в куче
+        \item строгая типизация
+      \end{itemize}
+    \end{column}
+  \end{columns}
+
+\end{frame}
+
+\begin{frame}{Java Memory Model}
+  \begin{columns}[t]
+    \begin{column}{5cm}
+      \begin{block}{Чтение из \eng{volatile} поля}
+        \begin{algorithmic}
+          \STATE $a.x = 42$
+          \STATE $\ldots$
+          \STATE $t = b.volatile\_field$
+          \STATE $\ldots$
+          \STATE $x = a.x$
+        \end{algorithmic}
+      \end{block}
+    \end{column}
+    \begin{column}{5cm}
+      \begin{block}{Чтение из обычного поля}
+        \begin{algorithmic}
+          \STATE $a.x = 42$
+          \STATE $\ldots$
+          \STATE $t = b.normal\_field$
+          \STATE $\ldots$
+          \STATE \only<1>{$x = a.x$} \only<2>{$x = 42$}
+        \end{algorithmic}
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Практические результаты}
+
+  Алгоритм реализован в статическом Java компиляторе и будет проведено
+  сравнение следующих его модификаций:
+  \begin{itemize}
+      \item алгоритм анализа не адаптированный для многопоточных программ
+      \item алгоритм анализа адаптированный для многопоточных программ
+      \item алгоритм анализа адаптированный для многопоточных программ с
+            учетом семантики final полей
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Заключение}
+
+  Сделано следующее:
+  \begin{itemize}
+    \item анализ существующих алгоритмов анализа указателей
+    \item изучены особенности языка Java
+    \item изучена спецификация модели памяти языка Java
+    \item разработан алгоритм анализа указателей и внутреннее представление,
+          адаптированные для анализа многопоточных Java программ
+    \item реализован алгоритм анализа в рамках статического оптимизирующего
+          Java компилятор Excelsior RVM
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}
+
+  \centering\huge
+
+  Спасибо!
+
+  Вопросы?
 
 \end{frame}
 
