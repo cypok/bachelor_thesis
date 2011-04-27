@@ -73,10 +73,9 @@
     \begin{column}{5cm}
       \begin{block}{Исходный код}
         \begin{algorithmic}
-          \STATE
           \FOR{$i = 0 \textbf{ to } n$}
           \STATE $x.f = i$
-          \STATE $a[i] = y.\only<1>{g}\only<2>{f}$
+          \STATE $a[i] = y.\only<1>{h}\only<2>{f}$
           \ENDFOR
         \end{algorithmic}
       \end{block}
@@ -84,7 +83,7 @@
     \begin{column}{5cm}
       \begin{block}{Преобразованный код}
         \begin{algorithmic}
-          \STATE $temp = y.\only<1>{g}\only<2>{f}$
+          \STATE $temp = y.\only<1>{h}\only<2>{f}$
           \FOR{$i = 0 \textbf{ to } n$}
           \STATE $x.f = i$
           \STATE $a[i] = temp$
