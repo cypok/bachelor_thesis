@@ -1120,10 +1120,51 @@
     данных \eng{Variable}, результату создания объекта~--- \eng{Allocation} и
     так далее.
     Все структуры данных хранят в себе тип соответствующего выражения и набор
-    целей, который может быть изменяемым, например, у локальной
-    переменной, или вычислимым, например, у результата операции преобразования
-    типов (подробнее про правила вычисления набора целей разных выражений в
-    разделе \ref{section:detailed_algorithm}).
+    целей, который может быть изменяемым набором, например, у локальной
+    переменной, или вычислимым из других наборов, например, у результата
+    операции преобразования типов (подробнее про правила вычисления набора
+    целей разных выражений в разделе \ref{section:detailed_algorithm}).
+
+    В примере \ref{code:aux_ir} показан фрагмент Java программы и
+    соответствующее ему вспомогательное внутреннее представление (выраженное в
+    псевдокоде).
+    Можно увидеть, как именно инструкции присваивания языка Java преобразуются
+    в структуры данных, используемые в данной работе.
+
+    \begin{algorithm}
+      \caption{Вспомогательное внутреннее представление}
+      \label{code:aux_ir}
+      \begin{multicols*}{2}
+        \algorithmictitle{Java код}
+        \begin{algorithmic}
+          \STATE $\textbf{class }\textmd{A } \{$
+          \STATE $\textmd{\quad Object }f;$
+          \STATE $\}$
+          \STATE $...$
+          \STATE $\{$
+          \STATE $\textmd{\quad Object }x = \textbf{new }\textmd{A}();$
+          \STATE $\textmd{\quad A }y = (\textmd{A})x;$
+          \STATE $\textmd{\quad}y.f = \textbf{new }\textmd{Object}();$
+          \STATE $\}$
+        \end{algorithmic}
+        \columnbreak
+        \algorithmictitle{Его представление}
+        \begin{algorithmic}
+          \STATE $vx = \textmd{Var}\{\textmd{var}: \textmd{x},%
+                            \textmd{type}: \textbf{Object}\}$
+          \STATE $vy = \textmd{Var}\{\textmd{var}: \textmd{y},%
+                            \textmd{type}: \textbf{A}\}$
+          \STATE $instructions = [$
+          \STATE $\textmd{\ }\{ \textmd{lhs}: vx,$
+          \STATE $\textmd{\ \, rhs}: \textmd{Alloc}\{\textmd{type}: \textbf{A}\}\}$
+          \STATE $\textmd{\ }\{ \textmd{lhs}: vy,$
+          \STATE $\textmd{\ \, rhs}: \textmd{Cast}\{\textmd{target}: \textbf{A}, \textmd{var}: vx\}\}$
+          \STATE $\textmd{\ }\{ \textmd{lhs}: \textmd{FieldAcc}\{\textmd{var}: vy, \textmd{field}: \textbf{f}\},$
+          \STATE $\textmd{\ \, rhs}: \textmd{Null}\{\}\}$
+          \STATE $]$
+        \end{algorithmic}
+      \end{multicols*}
+    \end{algorithm}
 
     Как можно заметить, при введении такого вспомогательного внутреннего
     представления, становится удобно проводить анализ указателей.
