@@ -23,7 +23,7 @@
   \npdecimalsign{,}
 
 \usepackage{tikz}
-\usetikzlibrary{arrows,shapes}
+\usetikzlibrary{positioning,arrows,shapes}
 
 \usepackage{footmisc}
 \renewcommand\footnotelayout{\small}
@@ -361,9 +361,53 @@
       Рассмотрим общую архитектуру оптимизирующего статического компилятора.
 
       \begin{figure}[!htb]
-        \center{\includegraphics[width=140mm]{arch}}
+        \centering
+
+        \tikzstyle{converter} = [rectangle, draw, thin, fill=orange!20,
+                            minimum height=2em, rounded corners=3mm,
+                            text width=1.2cm, text centered]
+
+        \tikzstyle{representation} = [circle, draw, thin, fill=green!20,
+                            minimum height=2em,
+                            text width=1.2cm, text centered]
+
+        \tikzstyle{optimizer} = [rectangle, draw, thin, fill=blue!10,
+                            minimum height=2em,
+                            text width=2.6cm, text centered]
+
+        \begin{tikzpicture}[auto,>=latex', thick]
+          \path[->] node[representation] (src) {SRC}
+                    node                 (d1)  [right=0.75cm of src] {}
+                    node[representation] (ast) [right=1.8cm of src] {AST}
+                    node                 (d2)  [right=0.75cm of ast] {}
+                    node[representation] (cfg) [right=1.8cm of ast] {CFG}
+                    node                 (d3)  [right=0.75cm of cfg] {}
+                    node[representation] (asm) [right=1.8cm of cfg] {ASM}
+                    node                 (d4)  [right=0.75cm of asm] {}
+                    node[representation] (obj) [right=1.8cm of asm] {OBJ}
+                    node[optimizer] (high)   [below=1cm of ast] {High-level Optimizer}
+                    node[optimizer] (middle) [below=1cm of cfg] {Middle-level Optimizer}
+                    node[optimizer] (low)    [below=1cm of asm] {Low-level Optimizer}
+                    node[converter] (c1)  [above=1.5cm of d1,text width=2.2cm] {Front-end}
+                    node[converter] (c2)  [above=1.5cm of d2] {}
+                    node[converter] (c3)  [above=1.5cm of d3,text width=2.2cm] {Code generator}
+                    node[converter] (c4)  [above=1.5cm of d4] {}
+                    (src) edge (c1)
+                    (c1) edge (ast)
+                    (ast) edge (c2)
+                    (c2) edge (cfg)
+                    (cfg) edge (c3)
+                    (c3) edge (asm)
+                    (asm) edge (c4)
+                    (c4) edge (obj)
+                    (ast) edge [<->] (high)
+                    (cfg) edge [<->] (middle)
+                    (asm) edge [<->] (low)
+                    ;
+        \end{tikzpicture}
         \caption{Архитектура оптимизирующего статического компилятора
-                 \todo{перевести на tikz}}
+                 (оранжевые~--- преобразователи, зеленые~--- представления,
+                 синие~--- оптимизаторы)}
         \label{fig:arch}
       \end{figure}
 
@@ -394,20 +438,20 @@
       \begin{figure}[!htb]
         \centering
 
-        \tikzstyle{optimizer} = [rectangle, draw, thin, fill=blue!10,
+        \tikzstyle{optimizer} = [rectangle, draw, thin, fill=red!15,
                             minimum height=2em, rounded corners=1mm,
                             text width=3cm, text centered]
-        \tikzstyle{analyzer} =  [rectangle, draw, thin, fill=blue!20,
+        \tikzstyle{analyzer} =  [rectangle, draw, thin, fill=yellow!20,
                             minimum height=2em, rounded corners=1mm,
                             text width=3cm, text centered]
 
-        \begin{tikzpicture}[node distance=5cm, auto,>=latex', thick]
+        \begin{tikzpicture}[node distance=2.5cm, auto,>=latex', thick]
           \path[->] node[optimizer] (o1) {Common Subexpression Elimination}
-                    node[optimizer, right of=o1] (o2) {Another Optimization}
-                    node[optimizer, right of=o2] (o3) {Loop Invariant Code Motion};
-          \path[->] node[analyzer, below of=o1] (a1) {Another Analysis}
-                    node[analyzer, below of=o2, line width=0.5mm] (a2) {Alias Analysis}
-                    node[analyzer, below of=o3] (a3) {Another Analysis}
+                    node[optimizer] (o2) [right=of o1] {Another Optimization}
+                    node[optimizer] (o3) [right=of o2] {Loop Invariant Code Motion};
+          \path[->] node[analyzer]  (a1) [below=of o1] {Another Analysis}
+                    node[analyzer]  (a2) [right=of a1, line width=0.5mm] {Alias Analysis}
+                    node[analyzer]  (a3) [right=of a2] {Another Analysis}
                     (o1) edge (a1) edge (a2)
                     (o2) edge (a2) edge (a3)
                     (o3) edge (a2)
