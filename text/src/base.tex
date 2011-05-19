@@ -11,6 +11,9 @@
 \usepackage{amssymb}
 \usepackage[pdftex]{graphicx}
 \usepackage{multicol}
+\usepackage{rotating}
+\usepackage{array}
+\usepackage{multirow}
 
 % TODO Change geometry: left=3cm,right=2cm !
 \usepackage[left=2.5cm,right=2.5cm,top=2cm,bottom=2cm,bindingoffset=0cm]{geometry}
@@ -925,18 +928,27 @@
 
       \begin{table}[!htb]
         \centering
-        \begin{tabular}{ |p{0.2\textwidth}|p{0.2\textwidth}|p{0.2\textwidth}|p{0.2\textwidth}| }
+
+        \def\yes{\multirow{2}{*}{}}
+        \def\no{\multirow{2}{*}{Нет}}
+
+        \begin{tabular}{ |c|c|c|c|c| }
+          \cline{3-5}
+          \multicolumn{2}{c|}{} & \multicolumn{3}{c|}{2-ая операция} \\
+          \cline{3-5}
+          \multicolumn{2}{c|}{} & Чтение/запись & Чтение              & Запись \\
+          \multicolumn{2}{c|}{} & обычного поля & \eng{volatile} поля & \eng{volatile} поля \\
           \hline
-          & \multicolumn{3}{c|}{2-ая операция} \\ \hline
-          1-ая операция & Чтение/запись обычного поля
-                        & Чтение \eng{volatile} поля
-                        & Запись \eng{volatile} поля \\ \hline
-          Чтение/запись обычного поля &     &     & Нет \\ \hline
-          Чтение \eng{volatile} поля  & Нет & Нет & Нет \\ \hline
-          Запись \eng{volatile} поля  &     & Нет & Нет \\ \hline
+          \multirow{6}{*}{\begin{sideways}1-ая операция\end{sideways}}
+          & Чтение/запись       & \yes & \yes & \no \\
+          & обычного поля       &      &      &     \\ \cline{2-5}
+          & Чтение              & \no  & \no  & \no \\
+          & \eng{volatile} поля &      &      &     \\ \cline{2-5}
+          & Запись              & \yes & \no  & \no \\
+          & \eng{volatile} поля &      &      &     \\ \hline
         \end{tabular}
         \caption{Возможность перестановки двух операций чтения или записи поля
-                 \todo{сделать ее покрасивее}}
+                 объекта}
         \label{tabular:can_reorder}
       \end{table}
 
