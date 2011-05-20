@@ -31,6 +31,12 @@
 \usepackage{footmisc}
 \renewcommand\footnotelayout{\small}
 
+\usepackage{etoolbox}
+\apptocmd{\sloppy}{\hbadness 10000\relax}{}{}
+
+% used by bibliography:
+\usepackage{datetime}
+\newcommand{\usedate}[3]{({\Russian дата обращения: \formatdate{#1}{#2}{#3}})}
 \bibliographystyle{gost780u}
 
 %\setcounter{tocdepth}{2} % глубина оглавления
@@ -1554,9 +1560,7 @@
     анализа.
 
   \newpage
-  %\begin{flushleft}
-    \bibliography{../../biblio}
-  %\end{flushleft}
+  \bibliography{../../biblio}
 
 \end{document}
 
