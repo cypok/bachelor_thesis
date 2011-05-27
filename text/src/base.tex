@@ -105,11 +105,8 @@
   {  \popQED % pop caption & label
    \end{figure}}
 
-% вставка subfigure внутри myfigure:
-% \subfigure[params]{подпись}{file}
-\newcommand{\mysubfigure}[3][]{
-  \subfloat[#2]{\label{fig:#3}\includegraphics[#1]{#3}}
-}
+%\newcommand{\inputplot}[1]{\input{#1}}
+\newcommand{\inputplot}[1]{Here would be plot}
 
 \let\oldsection\section
 \renewcommand{\section}{\newpage\oldsection}
@@ -1592,14 +1589,14 @@
       \begin{myplot}%
         {Распределение количества методов от числа присваиваний в них}%
         {plot:nassig_distribution}
-        \input{plots/nassig_distribution.tex}
+        \inputplot{plots/nassig_distribution.tex}
       \end{myplot}
 
       \begin{myplot}%
         {Распределение количества методов от числа операций создания новых
         объектов в них}%
         {plot:nobj_distribution}
-        \input{plots/nobj_distribution.tex}
+        \inputplot{plots/nobj_distribution.tex}
       \end{myplot}
 
     \subsection{Скорость работы}
@@ -1615,20 +1612,20 @@
         {Зависимость числа проходов алгоритма анализа от размера метода
         (радиус кругов пропорционален количеству методов)}%
         {plot:iter_count}
-        \input{plots/iter_count.tex}
+        \inputplot{plots/iter_count.tex}
       \end{myplot}
 
       \begin{myplot}%
         {Зависимость числа операций объединения множеств от размера метода}%
         {plot:merge_ops}
-        \input{plots/merge_ops.tex}
+        \inputplot{plots/merge_ops.tex}
       \end{myplot}
 
       \begin{myplot}%
         {Зависимость времени, потраченного на объединение множеств, от размера
         метода}%
         {plot:simple_ops}
-        \input{plots/simple_ops.tex}
+        \inputplot{plots/simple_ops.tex}
       \end{myplot}
 
       Больший интерес представляет количество операций объединения множеств и
@@ -1650,7 +1647,7 @@
       \begin{myplot}%
         {Зависимость объема множеств целей от размера метода}%
         {plot:mem_used}
-        \input{plots/mem_used.tex}
+        \inputplot{plots/mem_used.tex}
       \end{myplot}
 
       Для хранения множеств целей указателей алгоритм использует значительные
@@ -1705,37 +1702,37 @@
       \begin{myplot}%
         {Зависимость количества методов от значения меры точности для \eng{SPEC~JVM98}}%
         {plot:specjvm_all_aliases_distribution}
-        \input{plots/specjvm_all_aliases_distribution.tex}
+        \inputplot{plots/specjvm_all_aliases_distribution.tex}
       \end{myplot}
 
       \begin{myplot}%
         {Распределение методов от значения меры точности для \eng{SPEC~JVM98}}%
         {plot:specjvm_all_aliases_distribution_cumulative}
-        \input{plots/specjvm_all_aliases_distribution_cumulative.tex}
+        \inputplot{plots/specjvm_all_aliases_distribution_cumulative.tex}
       \end{myplot}
 
       \begin{myplot}%
         {Зависимость количества методов от значения меры точности для \eng{SPECjvm2008}}%
         {plot:specjvm2008_all_aliases_distribution}
-        \input{plots/specjvm2008_all_aliases_distribution.tex}
+        \inputplot{plots/specjvm2008_all_aliases_distribution.tex}
       \end{myplot}
 
       \begin{myplot}%
         {Распределение методов от значения меры точности для \eng{SPECjvm2008}}%
         {plot:specjvm2008_all_aliases_distribution_cumulative}
-        \input{plots/specjvm2008_all_aliases_distribution_cumulative.tex}
+        \inputplot{plots/specjvm2008_all_aliases_distribution_cumulative.tex}
       \end{myplot}
 
       \begin{myplot}%
         {Зависимость количества методов от значения меры точности для \eng{Eclipse~IDE}}%
         {plot:eclipse_all_aliases_distribution}
-        \input{plots/eclipse_all_aliases_distribution.tex}
+        \inputplot{plots/eclipse_all_aliases_distribution.tex}
       \end{myplot}
 
       \begin{myplot}%
         {Распределение методов от значения меры точности для \eng{Eclipse~IDE}}%
         {plot:eclipse_all_aliases_distribution_cumulative}
-        \input{plots/eclipse_all_aliases_distribution_cumulative.tex}
+        \inputplot{plots/eclipse_all_aliases_distribution_cumulative.tex}
       \end{myplot}
 
       Интересно наблюдать за разностью в точности на разных тестовых
