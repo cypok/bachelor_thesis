@@ -6,7 +6,7 @@
 \usepackage{ulem}
 
 \usepackage{tikz}
-\usetikzlibrary{arrows,shapes}
+\usetikzlibrary{positioning,arrows,shapes}
 
 \usetheme{Warsaw}
 \usecolortheme{seahorse}
@@ -17,8 +17,10 @@
   Анализ указателей и синонимов для многопоточных программ
 }
 \author[Владимир Парфиненко]{
-  Владимир Парфиненко\\
-  {\small Научный руководитель: м.\,н.\,с.~ИСИ~СО~РАН, Павлов\,П.\,Е.}
+  Владимир Парфиненко
+  \texorpdfstring{%
+    \\ \small Научный руководитель: м.\,н.\,с.~ИСИ~СО~РАН, Павлов\,П.\,Е.
+  }{}% short title in pdf
 }
 \institute{
   Новосибирский Государственный Университет
@@ -43,6 +45,7 @@
 \newcommand{\todocite}{[\todo{cite}]}
 
 \newcommand{\eng}[1]{{\English#1}}
+\newcommand{\engdef}[1]{(англ.~\eng{#1})}
 
 \begin{document}
 
@@ -53,10 +56,10 @@
 \begin{frame}{Статический анализ}
 
   \begin{itemize}
-    \item Оптимизирующие компиляторы\newline
+    \item \textbf{Оптимизирующие компиляторы}\\
         GCC, MSVC, ICC, Borland C++, MinGW, \ldots
-    \item Инструменты статического анализа\newline
-        SourceAnalyzer, ReSharper, Static Security Analyzer, \ldots
+    \item \textbf{Инструменты статического анализа}\\
+        FindBugs, SourceAnalyzer, ReSharper, Static~Security~Analyzer, \ldots
   \end{itemize}
 
 \end{frame}
@@ -103,32 +106,41 @@
                          minimum height=2em, rounded corners=1mm]
 
   \begin{figure}
-  \begin{tikzpicture}[node distance=3cm, auto,>=latex', thick]
-      % We need to set at bounding box first. Otherwise the diagram
-      % will change position for each frame.
-      \path[use as bounding box] (-1,0) rectangle (7,-2);
-      \path[->]<1-> node[optimizer] (o1) {Optimization 1}
-                    node[optimizer, right of=o1] (o2) {Optimization 2}
-                    node[optimizer, right of=o2] (o3) {Optimization 3};
-      \path[->]<2-> node[analyzer, below of=o1] (a1) {Analysis 1}
-                    node[analyzer, below of=o2] (a2) {Alias Analysis}
-                    node[analyzer, below of=o3] (a3) {Analysis 2}
-                    (o1) edge (a1) edge (a2)
-                    (o2) edge (a2) edge (a3)
-                    (o3) edge (a2);
-  \end{tikzpicture}
+    \tikzstyle{every node}=[font=\small]
+
+    \tikzstyle{optimizer} = [rectangle, draw, thin, fill=red!15,
+                        minimum height=2em, rounded corners=1mm,
+                        text width=2.9cm, text centered]
+    \tikzstyle{analyzer} =  [rectangle, draw, thin, fill=yellow!20,
+                        minimum height=2em, rounded corners=1mm,
+                        text width=2.9cm, text centered]
+
+    \begin{tikzpicture}[node distance=0.5cm, auto,>=latex', thick]
+      \path[->]<1->
+                node[optimizer] (o1) {Выделение общих подвыражений}
+                node[optimizer] (o2) [right=of o1] {Протяжка констант}
+                node[optimizer] (o3) [right=of o2] {Вынесение инвариантов из цикла}
+                node[analyzer]  (a1) [below=2cm of o1] {Escape-анализ}
+                node[analyzer]  (a2) [right=of a1, line width=0.5mm] {Анализ синонимов}
+                node[analyzer]  (a3) [right=of a2] {Анализ потоков управления};
+      \path[->]<2->
+                (o1) edge (a2)
+                (o2) edge (a1) edge (a3)
+                (o3) edge (a2) edge (a3)
+                (a1) edge (a2);
+    \end{tikzpicture}
   \end{figure}
 
 \end{frame}
 
 \begin{frame}{Анализ синонимов и указателей}
 
-  \begin{block}{Анализ синонимов (англ. \eng{Alias Analysis})}
+  \begin{block}{Анализ синонимов \engdef{Alias Analysis}}
     Могут ли два разных выражения ссылочного типа указывать на одно и то же
     место в памяти?
   \end{block}
 
-  \begin{block}{Анализ указателей (англ. \eng{Points-To Analysis})}
+  \begin{block}{Анализ указателей \engdef{Points-To Analysis}}
     На какие объекты в памяти могут указывать выражения ссылочного типа?
   \end{block}
 
@@ -168,9 +180,10 @@
 \begin{frame}{Существующие алгоритмы}
 
   \begin{itemize}
-    \item Алгоритм Андерсена\\сложность $O(N^3)$, более точный
-    \item Алгоритм Стинсгарда\\сложность $O(N \alpha(N,N))$, менее точный\\
-          {\small($\alpha(N,N)$~--- обратная функция Аккермана)}
+    \item \textbf{Алгоритм Андерсена}\\более точный, временная сложность $O(N^3)$
+    \item \textbf{Алгоритм Стинсгарда}\\менее точный, временная сложность $O(N
+          \alpha(N))$,\\где $\alpha(N)$~--- обратная функция Аккермана, очень
+          медленно растущая, можно принять за константу.
   \end{itemize}
 
 \end{frame}
