@@ -47,6 +47,10 @@
 \newcommand{\eng}[1]{{\English#1}}
 \newcommand{\engdef}[1]{(англ.~\eng{#1})}
 
+\newcommand{\notmatter}[1]{\only<1>{#1}\only<2->{\textcolor{Gray}{#1}}}
+\newcommand{\pts}[1]{\overline{#1}}
+\newcommand{\cupe}{\,\cup\!\!=}
+
 \begin{document}
 
 \begin{frame}
@@ -78,7 +82,8 @@
         \begin{algorithmic}
           \FOR{$i = 0 \textbf{ to } n$}
           \STATE $x.f = i$
-          \STATE $a[i] = y.f$
+          \STATE $t = y.f$
+          \STATE $a[i] = t$
           \ENDFOR
         \end{algorithmic}
       \end{block}
@@ -86,10 +91,10 @@
     \begin{column}{5cm}
       \begin{block}{Преобразованный код}
         \begin{algorithmic}
-          \STATE $temp = y.f$
+          \STATE $t = y.f$
           \FOR{$i = 0 \textbf{ to } n$}
           \STATE $x.f = i$
-          \STATE $a[i] = temp$
+          \STATE $a[i] = t$
           \ENDFOR
         \end{algorithmic}
       \end{block}
@@ -116,14 +121,14 @@
                         text width=2.9cm, text centered]
 
     \begin{tikzpicture}[node distance=0.5cm, auto,>=latex', thick]
-      \path[->]<1->
+      \path[->]
                 node[optimizer] (o1) {Выделение общих подвыражений}
                 node[optimizer] (o2) [right=of o1] {Протяжка констант}
                 node[optimizer] (o3) [right=of o2] {Вынесение инвариантов из цикла}
                 node[analyzer]  (a1) [below=2cm of o1] {Escape-анализ}
                 node[analyzer]  (a2) [right=of a1, line width=0.5mm] {Анализ синонимов}
                 node[analyzer]  (a3) [right=of a2] {Анализ потоков управления};
-      \path[->]<2->
+      \path[->]
                 (o1) edge (a2)
                 (o2) edge (a1) edge (a3)
                 (o3) edge (a2) edge (a3)
@@ -163,10 +168,11 @@
 \begin{frame}{Цель и задачи}
 
   \begin{itemize}
-    \item Цель: разработка внутрипроцедурного алгоритма анализа указателей и
+    \item \textbf{Цель:}
+          разработка внутрипроцедурного алгоритма анализа указателей и
           внутреннего представления для использования в статическом
           оптимизирующем Java компиляторе Excelsior RVM
-    \item Основные задачи:
+    \item \textbf{Основные задачи:}
       \begin{itemize}
         \item изучить существующие алгоритмы и выбрать подходящий
         \item адаптировать для анализа Java программ
@@ -185,6 +191,27 @@
           \alpha(N))$,\\где $\alpha(N)$~--- обратная функция Аккермана, очень
           медленно растущая, можно принять за константу.
   \end{itemize}
+
+\end{frame}
+
+\begin{frame}{Идея алгоритма}
+
+  $\pts{expr}$~--- множество объектов, на которые может указывать выражение
+  $expr$
+
+  \[
+    \text{Присваивание }lhs = rhs
+  \]
+  \[
+    \text{До: }
+    \pts{lhs} = \{\textcolor{blue}{O_1, O_2}\}, \pts{rhs} =
+    \{\textcolor{blue}{O_2, O_3}\}
+  \]
+  \[
+    \text{После: }
+    \pts{lhs} = \{\textcolor{blue}{O_1, O_2, O_3}\}, \pts{rhs} =
+    \{\textcolor{blue}{O_2, O_3}\}
+  \]
 
 \end{frame}
 
@@ -247,6 +274,45 @@
   \end{columns}
 \end{frame}
 
+\begin{frame}{Внутреннее представление}
+  \begin{columns}[t]
+    \begin{column}{5cm}
+      \begin{block}{Отрывок Java-программы}
+        \begin{algorithmic}
+          \STATE \notmatter{$\textbf{int } x = 42, y = 0;$}
+          \STATE $\textbf{Object } a = \textbf{new A}();$
+          \STATE $\notmatter{y} = foo(\notmatter{x}, a);$
+          \STATE \notmatter{$\textbf{if }(y == 37) \{$}
+            \STATE $\text{\quad}a.f = \textbf{null};$
+          \STATE \notmatter{$\}\textbf{ else }\{$}
+            \STATE $\text{\quad}o = \textbf{new B}();$
+            \STATE $\text{\quad}a.f = o;$
+          \STATE \notmatter{$\}$}
+          \STATE \notmatter{$\textbf{return } a;$}
+        \end{algorithmic}
+      \end{block}
+    \end{column}
+    \begin{column}{5cm}
+      \begin{visibleenv}<3->
+      \begin{block}{Внутреннее представление}
+        \small
+        \def\lhs{\textbf{lhs}\colon}
+        \def\rhs{\textbf{rhs}\colon}
+        \begin{algorithmic}
+          \STATE $assignments = [$
+          \STATE $\{\lhs Var(a), \rhs Alloc(A)\},$
+          \STATE $\{\lhs null, \rhs Call(foo, \ldots)\},$
+          \STATE $\{\lhs Field(a, f), \rhs Null()\},$
+          \STATE $\{\lhs Var(o), \rhs Alloc(B)\},$
+          \STATE $\{\lhs Field(a, f), \rhs Var(o)\},$
+          \STATE $]$
+        \end{algorithmic}
+      \end{block}
+      \end{visibleenv}
+    \end{column}
+  \end{columns}
+\end{frame}
+
 \begin{frame}{Практические результаты}
 
   Алгоритм реализован в статическом Java компиляторе и будет проведено
@@ -263,13 +329,14 @@
 
   Сделано следующее:
   \begin{itemize}
-    \item анализ существующих алгоритмов анализа указателей
+    \item проведен анализ существующих алгоритмов
     \item изучены особенности языка Java
     \item изучена спецификация модели памяти языка Java
     \item разработан алгоритм анализа указателей и внутреннее представление,
           адаптированные для анализа многопоточных Java программ
-    \item реализован алгоритм анализа в рамках статического оптимизирующего
-          Java компилятор Excelsior RVM
+    \item предложенный алгоритм реализован в рамках статического
+          оптимизирующего Java компилятор Excelsior RVM
+    \item проведены практические замеры производительности и точности алгоритма
   \end{itemize}
 
 \end{frame}
