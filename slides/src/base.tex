@@ -8,6 +8,12 @@
 \usepackage{tikz}
 \usetikzlibrary{positioning,arrows,shapes}
 
+\usepackage{numprint}
+\newcommand{\num}[1]{\numprint{#1}}
+  \npthousandsep{\,}
+  \npthousandthpartsep{}
+  \npdecimalsign{,}
+
 \usetheme{Warsaw}
 \usecolortheme{seahorse}
 
@@ -17,9 +23,10 @@
   Анализ указателей и синонимов для многопоточных программ
 }
 \author[Владимир Парфиненко]{
-  Владимир Парфиненко
+  Парфиненко Владимир Владимирович
   \texorpdfstring{%
-    \\ \small Научный руководитель: м.\,н.\,с.~ИСИ~СО~РАН, Павлов\,П.\,Е.
+    \\ \vspace{5mm} \small Научный руководитель\\ м.\,н.\,с.~ИСИ~СО~РАН, Павлов Павел
+    Евгеньевич
   }{}% short title in pdf
 }
 \institute{
@@ -28,7 +35,6 @@
 \date{
   Новосибирск, 2011
 }
-
 
 % добавить номер фрейма в footline
 \newcommand*\oldmacro{}
@@ -50,6 +56,10 @@
 \newcommand{\notmatter}[1]{\only<1>{#1}\only<2->{\textcolor{Gray}{#1}}}
 \newcommand{\pts}[1]{\overline{#1}}
 \newcommand{\cupe}{\,\cup\!\!=}
+\newcommand{\obj}[1]{\textcolor{blue}{O_{#1}}}
+
+\newcommand{\inputplot}[1]{\centering\includegraphics[width=0.9\textwidth]{#1}}
+
 
 \begin{document}
 
@@ -80,22 +90,22 @@
     \begin{column}{5cm}
       \begin{block}{Исходный код}
         \begin{algorithmic}
-          \FOR{$i = 0 \textbf{ to } n$}
-          \STATE $x.f = i$
-          \STATE $t = y.f$
-          \STATE $a[i] = t$
-          \ENDFOR
+          \STATE $\textbf{for }(i = 0; i < n; i\!+\!+)\ \{$
+          \STATE $\text{\quad}x.f = i$
+          \STATE $\text{\quad}\textcolor{blue}{t = y.f}$
+          \STATE $\text{\quad}a[i] = t$
+          \STATE $\}$
         \end{algorithmic}
       \end{block}
     \end{column}
     \begin{column}{5cm}
       \begin{block}{Преобразованный код}
         \begin{algorithmic}
-          \STATE $t = y.f$
-          \FOR{$i = 0 \textbf{ to } n$}
-          \STATE $x.f = i$
-          \STATE $a[i] = t$
-          \ENDFOR
+          \STATE $\textcolor{blue}{t = y.f}$
+          \STATE $\textbf{for }(i = 0; i < n; i\!+\!+)\ \{$
+          \STATE $\text{\quad}x.f = i$
+          \STATE $\text{\quad}a[i] = t$
+          \STATE $\}$
         \end{algorithmic}
       \end{block}
     \end{column}
@@ -204,13 +214,11 @@
   \]
   \[
     \text{До: }
-    \pts{lhs} = \{\textcolor{blue}{O_1, O_2}\}, \pts{rhs} =
-    \{\textcolor{blue}{O_2, O_3}\}
+    \pts{lhs} = \{\obj{1}, \obj{2}\}, \pts{rhs} = \{\obj{2}, \obj{3}\}
   \]
   \[
     \text{После: }
-    \pts{lhs} = \{\textcolor{blue}{O_1, O_2, O_3}\}, \pts{rhs} =
-    \{\textcolor{blue}{O_2, O_3}\}
+    \pts{lhs} = \{\obj{1}, \obj{2}, \obj{3}\}, \pts{rhs} = \{\obj{2}, \obj{3}\}
   \]
 
 \end{frame}
@@ -246,7 +254,7 @@
 
 \end{frame}
 
-\begin{frame}{Java Memory Model}
+\begin{frame}{Модель памяти языка Java}
   \begin{columns}[t]
     \begin{column}{5cm}
       \begin{block}{Чтение из \eng{volatile} поля}
@@ -315,14 +323,51 @@
 
 \begin{frame}{Практические результаты}
 
-  Алгоритм реализован в статическом Java компиляторе и будет проведено
-  сравнение следующих его модификаций:
+  Алгоритм анализа реализован в статическом Java компиляторе.
+
+  Проведены эксперименты на следующих приложениях:
   \begin{itemize}
-      \item алгоритм анализа не адаптированный для многопоточных программ
-      \item алгоритм анализа адаптированный для многопоточных программ
-      \item алгоритм анализа адаптированный для многопоточных программ с
-            учетом семантики final полей
+    \item \eng{SPEC~JVM98}: \num{3701} метод
+    \item \eng{SPECjvm2008}: \num{37931} метод
+    \item \eng{Eclipse~IDE}: \num{263802} метода
   \end{itemize}
+
+\end{frame}
+
+\begin{frame}{Временная сложность}
+
+  \inputplot{simple_ops}
+
+\end{frame}
+
+\begin{frame}{Емкостная сложность}
+
+  \inputplot{mem_used}
+
+\end{frame}
+
+\begin{frame}{Сравнение точности}
+
+  Для сравнения с \textcolor{Red}{основным алгоритмом} были использованы его
+  вариации:
+  \begin{itemize}
+    \item \textcolor{Green}{алгоритм, не учитывающий информацию о типах языка}
+    \item \textcolor{Blue}{алгоритм, не учитывающий потоки данных в программе}
+    \item \textcolor{Orange}{алгоритм, основанный на алгоритме Стинсгарда}
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}{Сравнение точности на примере SPEC JVM98}
+
+  \inputplot{specjvm_all_aliases_distribution_cumulative}
+
+\end{frame}
+
+\begin{frame}{Сравнение точности на примере Eclipse IDE}
+
+  \inputplot{eclipse_all_aliases_distribution_cumulative}
+
 \end{frame}
 
 \begin{frame}{Заключение}
@@ -350,5 +395,41 @@
   Вопросы?
 
 \end{frame}
+
+\begin{frame}
+
+\end{frame}
+
+\begin{frame}{Нечувствительный к потоку управления анализ}
+
+  \begin{block}{Пример}
+    \begin{algorithmic}[1]
+      \STATE $var = \textbf{new A}()$
+      \STATE $\textbf{if }(\ldots)\ \{$
+        \STATE $\text{\quad}var = \textbf{new B}()$
+      \STATE $\}$
+      \STATE \ldots
+    \end{algorithmic}
+  \end{block}
+
+  \[
+    \text{Корректная аппроксимация множества целей: }
+    \pts{var} = \{\obj{A}, \obj{B}\}
+  \]
+
+\end{frame}
+
+\begin{frame}{Плотность методов в зависимости от обратной точности}
+
+  \inputplot{eclipse_all_aliases_distribution}
+
+\end{frame}
+\begin{frame}{Распределение методов в зависимости от обратной точности}
+
+  \inputplot{eclipse_all_aliases_distribution_cumulative}
+
+\end{frame}
+
+\addtocounter{framenumber}{-4}
 
 \end{document}
