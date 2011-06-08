@@ -22,7 +22,7 @@
 \title[Анализ указателей и синонимов]{
   Анализ указателей и синонимов для многопоточных программ
 }
-\author[Владимир Парфиненко]{
+\author[Парфиненко Владимир Владимирович]{
   Парфиненко Владимир Владимирович
   \texorpdfstring{%
     \\ \vspace{5mm} \small Научный руководитель\\ м.\,н.\,с.~ИСИ~СО~РАН, Павлов Павел
@@ -53,10 +53,12 @@
 \newcommand{\eng}[1]{{\English#1}}
 \newcommand{\engdef}[1]{(англ.~\eng{#1})}
 
-\newcommand{\notmatter}[1]{\only<1>{#1}\only<2->{\textcolor{Gray}{#1}}}
+\definecolor{LightGrayWithBlue}{RGB}{133,133,143}
+\newcommand{\notmatter}[1]{\only<1>{#1}\only<2->{\textcolor{LightGrayWithBlue}{#1}}}
+
 \newcommand{\pts}[1]{\overline{#1}}
-\newcommand{\cupe}{\,\cup\!\!=}
 \newcommand{\obj}[1]{\textcolor{blue}{O_{#1}}}
+\newcommand{\cupe}{\,\cup\!\!=}
 
 \newcommand{\inputplot}[1]{\centering\includegraphics[width=0.9\textwidth]{#1}}
 
@@ -290,7 +292,7 @@
           \STATE \notmatter{$\textbf{int } x = 42, y = 0;$}
           \STATE $\textbf{Object } a = \textbf{new A}();$
           \STATE $\notmatter{y} = foo(\notmatter{x}, a);$
-          \STATE \notmatter{$\textbf{if }(y == 37) \{$}
+          \STATE \notmatter{$\textbf{if }(y == 37)\ \{$}
             \STATE $\text{\quad}a.f = \textbf{null};$
           \STATE \notmatter{$\}\textbf{ else }\{$}
             \STATE $\text{\quad}o = \textbf{new B}();$
