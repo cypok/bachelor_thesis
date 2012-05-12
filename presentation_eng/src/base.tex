@@ -1,0 +1,67 @@
+\documentclass[12pt]{article}
+\usepackage{ucs}
+\usepackage[utf8x]{inputenc}
+\usepackage[english]{babel}
+\usepackage{indentfirst}
+
+\usepackage[left=3cm,right=3cm,top=3cm,bottom=3cm,bindingoffset=0cm]{geometry}
+\linespread{1.3}
+
+\newcommand{\eng}[1]{{\English#1}}
+
+\title{
+  Points-to analysis and alias analysis for multithreaded programs.
+  Vladimir Parfinenko.
+}
+\author{
+  Vladimir Parfinenko
+}
+
+\begin{document}
+
+  \thispagestyle{empty}
+
+  \begin{center}
+    \bfseries
+    Points-to analysis and alias analysis\\
+    of multithreaded programs.\\
+    Vladimir Parfinenko.
+  \end{center}
+  \vspace{0.5cm}
+
+  Hello. My name is Vladimir Parfinenko, I am the first year master student of
+  the Department of Mechanics and Mathematics of Novosibirsk State University.
+  My scientific advisor is Pavel Pavlov, researcher in the Institute of
+  Informatics Systems. And the theme of my work is "Point-to analysis and alias
+  analysis of multithreaded programs".
+
+  Static code analysis is widely used in optimizing compilers and in a software
+  model checking tools. Points-to analysis is a static code analysis technique
+  that establishes which pointers, or heap references, can point to which
+  variables or storage locations. Alias analysis is similar to points-to
+  analysis, it computes pairs of expressions that may be aliased (point to the
+  same location).
+
+  Classical points-to analysis algorithms were developed in early 1990s for
+  C-based languages. I was given a task to develop a points-to analysis
+  algorithm for Java language which appreciably differs from C language.
+  Also analysis algorithm should be adapted for analysing multithreaded
+  programs because nowadays such programs become increasingly popular
+  due to omnipresence of multicore processors.
+
+  During my work classical points-to analysis algorithms for analysis were
+  reviewed and compared. Taking the algorithm proposed by Lars Ole Andersen, a
+  new algorithm suitable for the efficient analysis of multithreaded programs
+  in Java was developed. This required a careful study of the Java Language
+  Specification and the Java Memory Model.
+
+  The developed algorithm was implemented within the optimizing ahead-of-time
+  Java compiler Excelsior Research Virtual Machine. In practical experiments
+  time complexity and space complexity were measured. Also the comparison of
+  precision with other analysis algorithms was performed. The developed
+  algorithm has demostrated satisfactory performance in practice and a
+  significant increase in accuracy compared to the algorithms not adapted for
+  analysing of multithreaded programs in Java.
+
+\end{document}
+
